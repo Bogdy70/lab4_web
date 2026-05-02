@@ -5,4 +5,5 @@ C:\Users\ASUS\Documents\lab4_web\src\main\java\ro\lab\lab4web\dto\ProductRespons
 C:\Users\ASUS\Documents\lab4_web\src\main\java\ro\lab\lab4web\exception\ProductNotFoundException.java
 C:\Users\ASUS\Documents\lab4_web\src\main\java\ro\lab\lab4web\Lab4WebApplication.java
 C:\Users\ASUS\Documents\lab4_web\src\main\java\ro\lab\lab4web\model\Product.java
+C:\Users\ASUS\Documents\lab4_web\src\main\java\ro\lab\lab4web\repository\ProductRepository.java
 C:\Users\ASUS\Documents\lab4_web\src\main\java\ro\lab\lab4web\service\ProductService.java

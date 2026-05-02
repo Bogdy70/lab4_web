@@ -1,5 +1,6 @@
 package ro.lab.lab4web.controller;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import org.springframework.http.HttpStatus;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import ro.lab.lab4web.dto.ApiError;
@@ -45,9 +47,14 @@ public class ProductController {
         return productService.countProducts();
     }
 
-    @GetMapping("/search/{name}")
-    public List<ProductResponse> searchProductsByName(@PathVariable String name) {
+    @GetMapping("/search")
+    public List<ProductResponse> searchProductsByName(@RequestParam String name) {
         return productService.searchProductsByName(name);
+    }
+
+    @GetMapping("/price-less-than")
+    public List<ProductResponse> findProductsWithPriceLessThan(@RequestParam BigDecimal price) {
+        return productService.findProductsWithPriceLessThan(price);
     }
 
     @PostMapping
