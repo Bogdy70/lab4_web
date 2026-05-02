@@ -36,9 +36,19 @@ class Lab4WebApplicationTests {
 
     @Test
     void searchProductsReturnsProductsFilteredByName() throws Exception {
-        mockMvc.perform(get("/api/products/search/top"))
+        mockMvc.perform(get("/api/products/search")
+                        .param("name", "top"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].name").value("Laptop"));
+    }
+
+    @Test
+    void findProductsWithPriceLessThanReturnsProductsFilteredByPrice() throws Exception {
+        mockMvc.perform(get("/api/products/price-less-than")
+                        .param("price", "100"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].name").value("Mouse"))
+                .andExpect(jsonPath("$[1].name").value("Caiet"));
     }
 
     @Test

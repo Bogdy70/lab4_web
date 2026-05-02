@@ -3,9 +3,6 @@ package ro.lab.lab4web.service;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.atomic.AtomicLong;
 
 import org.springframework.stereotype.Service;
 
@@ -13,21 +10,23 @@ import ro.lab.lab4web.dto.ProductRequest;
 import ro.lab.lab4web.dto.ProductResponse;
 import ro.lab.lab4web.exception.ProductNotFoundException;
 import ro.lab.lab4web.model.Product;
+import ro.lab.lab4web.repository.ProductRepository;
 
 @Service
 public class ProductService {
 
-    private final Map<Long, Product> products = new ConcurrentHashMap<>();
-    private final AtomicLong nextId = new AtomicLong(1);
+    private final ProductRepository productRepository;
 
-    public ProductService() {
+    public ProductService(ProductRepository productRepository) {
+        this.productRepository = productRepository;
+
         createProduct(new ProductRequest("Laptop", BigDecimal.valueOf(3500), 8, "Electronice"));
         createProduct(new ProductRequest("Mouse", BigDecimal.valueOf(80), 25, "Electronice"));
         createProduct(new ProductRequest("Caiet", BigDecimal.valueOf(12), 50, "Papetarie"));
     }
 
     public List<ProductResponse> getAllProducts() {
-        return products.values()
+        return productRepository.findAll()
                 .stream()
                 .map(this::toResponse)
                 .toList();
@@ -38,15 +37,19 @@ public class ProductService {
     }
 
     public long countProducts() {
-        return products.size();
+        return productRepository.count();
     }
 
     public List<ProductResponse> searchProductsByName(String name) {
-        String searchedName = name.toLowerCase();
-
-        return products.values()
+        return productRepository.findByNameContainingIgnoreCase(name)
                 .stream()
-                .filter(product -> product.getName().toLowerCase().contains(searchedName))
+                .map(this::toResponse)
+                .toList();
+    }
+
+    public List<ProductResponse> findProductsWithPriceLessThan(BigDecimal price) {
+        return productRepository.findByPriceLessThan(price)
+                .stream()
                 .map(this::toResponse)
                 .toList();
     }
@@ -54,17 +57,15 @@ public class ProductService {
     public ProductResponse createProduct(ProductRequest request) {
         validateProduct(request);
 
-        Long id = nextId.getAndIncrement();
         Product product = new Product(
-                id,
+                null,
                 request.name(),
                 request.price(),
                 request.stock(),
                 request.category()
         );
 
-        products.put(id, product);
-        return toResponse(product);
+        return toResponse(productRepository.save(product));
     }
 
     public ProductResponse updateProduct(Long id, ProductRequest request) {
@@ -76,25 +77,18 @@ public class ProductService {
         product.setStock(request.stock());
         product.setCategory(request.category());
 
-        return toResponse(product);
+        return toResponse(productRepository.save(product));
     }
 
     public void deleteProduct(Long id) {
-        Product removedProduct = products.remove(id);
-
-        if (removedProduct == null) {
+        if (!productRepository.deleteById(id)) {
             throw new ProductNotFoundException(id);
         }
     }
 
     private Product findProduct(Long id) {
-        Product product = products.get(id);
-
-        if (product == null) {
-            throw new ProductNotFoundException(id);
-        }
-
-        return product;
+        return productRepository.findById(id)
+                .orElseThrow(() -> new ProductNotFoundException(id));
     }
 
     private void validateProduct(ProductRequest request) {

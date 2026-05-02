@@ -1,4 +1,14 @@
 {
     "java.compile.nullAnalysis.mode": "automatic",
-    "java.configuration.updateBuildConfiguration": "interactive"
+    "java.configuration.updateBuildConfiguration": "automatic",
+    "java.debug.settings.onBuildFailureProceed": true,
+    "terminal.integrated.defaultProfile.windows": "PowerShell No Profile",
+    "terminal.integrated.profiles.windows": {
+        "PowerShell No Profile": {
+            "source": "PowerShell",
+            "args": [
+                "-NoProfile"
+            ]
+        }
+    }
 }
