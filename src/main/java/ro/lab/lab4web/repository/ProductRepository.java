@@ -1,6 +1,7 @@
 package ro.lab.lab4web.repository;
 
 import java.math.BigDecimal;
+import java.time.Instant;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
@@ -54,6 +55,10 @@ public class ProductRepository {
     public Product save(Product product) {
         if (product.getId() == null) {
             product.setId(nextId.getAndIncrement());
+        }
+
+        if (product.getCreatedAt() == null) {
+            product.setCreatedAt(Instant.now());
         }
 
         products.put(product.getId(), product);

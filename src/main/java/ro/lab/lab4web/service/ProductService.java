@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import ro.lab.lab4web.dto.ProductRequest;
 import ro.lab.lab4web.dto.ProductResponse;
+import ro.lab.lab4web.dto.UpdateStockRequest;
 import ro.lab.lab4web.exception.ProductNotFoundException;
 import ro.lab.lab4web.model.Product;
 import ro.lab.lab4web.repository.ProductRepository;
@@ -62,7 +63,8 @@ public class ProductService {
                 request.name(),
                 request.price(),
                 request.stock(),
-                request.category()
+                request.category(),
+                null
         );
 
         return toResponse(productRepository.save(product));
@@ -76,6 +78,15 @@ public class ProductService {
         product.setPrice(request.price());
         product.setStock(request.stock());
         product.setCategory(request.category());
+
+        return toResponse(productRepository.save(product));
+    }
+
+    public ProductResponse updateStock(Long id, UpdateStockRequest request) {
+        validateStock(request);
+
+        Product product = findProduct(id);
+        product.setStock(request.stock());
 
         return toResponse(productRepository.save(product));
     }
@@ -106,6 +117,24 @@ public class ProductService {
             errors.add("stock cannot be negative");
         }
 
+        if (request.category() == null || request.category().isBlank()) {
+            errors.add("category is required");
+        }
+
+        if (!errors.isEmpty()) {
+            throw new IllegalArgumentException(String.join(", ", errors));
+        }
+    }
+
+    private void validateStock(UpdateStockRequest request) {
+        List<String> errors = new ArrayList<>();
+
+        if (request.stock() == null) {
+            errors.add("stock is required");
+        } else if (request.stock() < 0) {
+            errors.add("stock cannot be negative");
+        }
+
         if (!errors.isEmpty()) {
             throw new IllegalArgumentException(String.join(", ", errors));
         }
@@ -117,7 +146,8 @@ public class ProductService {
                 product.getName(),
                 product.getPrice(),
                 product.getStock(),
-                product.getCategory()
+                product.getCategory(),
+                product.getCreatedAt()
         );
     }
 }

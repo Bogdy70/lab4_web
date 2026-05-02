@@ -1,6 +1,7 @@
 package ro.lab.lab4web.model;
 
 import java.math.BigDecimal;
+import java.time.Instant;
 
 public class Product {
 
@@ -9,16 +10,18 @@ public class Product {
     private BigDecimal price;
     private int stock;
     private String category;
+    private Instant createdAt;
 
     public Product() {
     }
 
-    public Product(Long id, String name, BigDecimal price, int stock, String category) {
+    public Product(Long id, String name, BigDecimal price, int stock, String category, Instant createdAt) {
         this.id = id;
         this.name = name;
         this.price = price;
         this.stock = stock;
         this.category = category;
+        this.createdAt = createdAt;
     }
 
     public Long getId() {
@@ -59,5 +62,13 @@ public class Product {
 
     public void setCategory(String category) {
         this.category = category;
+    }
+
+    public Instant getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(Instant createdAt) {
+        this.createdAt = createdAt;
     }
 }
